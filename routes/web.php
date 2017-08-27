@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('home');
 });
+
+Route::post('/departure/create', [
+	'use' => 'DepartureController@create',
+	'as' => 'departurecreate',
+	]);

@@ -79,14 +79,39 @@
         <div class="column">Cargo 0</div>
     </div>
 </div>
+<div class="modal" :class="{'is-active' : modalGeneral}">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <div class="content">
+            <h3 class="text-center">@{{ titleModal }}</h3>
+            <div class="field">
+                <label class="label">@{{ messageModal }}</label>
+                <p class="control" v-if="modalDeparture != 0">
+                    <input class="input" placeholder="Departamento.." v-model="titleDeparture" v-if="modalDeparture == 1">
+                </p>
+                <div class="columns text-center" v-show="errorTitleDeparture">
+                    <div class="columns text-center text-danger">
+                        El nombre del departamento no puede estar vacio.
+                    </div>
+                </div>
+                <div class="columns button-content">
+                    <div class="columns">
+                        <a class="button is-danger" @click="closeModal()">Cancelar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="modal-close" @click="closeModal()"></button>
+    </div>
+</div>
 @endsection
 @section('script')
 <script>
-	let elemento = new Vue({
-		el: '.app',
-		data: {
-			menu: 0
-		}
-	});
+        let elemento = new Vue({
+            el: '.app',
+            data: {
+                menu:0
+            }
+        })
 </script>
 @endsection
