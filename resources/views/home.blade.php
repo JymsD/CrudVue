@@ -43,6 +43,11 @@
                 <div class="column text-center">
                     <h3>Departamentos</h3>
                 </div>
+                <div class="columns">
+                    <a class="button is-success" @click="openModal('departure','create')">
+                        Agregar Departamento
+                    </a>
+                </div>
             </div>
             <div class="columns">
                 <div class="column">
@@ -111,17 +116,102 @@
             el: '.app',
             data: {
                 menu:0,
+
                 modalGeneral:0,
+
                 titleModal:'',
+
                 messageModal:'',
+
                 modalDeparture:0,
+
                 titleDeparture:'',
+
                 errorTitleDeparture:0,
             },
 
             methods: {
-                closeModal(){},
+                closeModal() {
+
+                    this.modalGeneral = 0;
+                    this.titleModal = '';
+                    this.messageModal = '';
+                },
+
                 createDeparture(){},
+
+                openModal(type, action, data = []){
+
+                    switch (type) {
+                        case "departure":
+                            {
+                                switch (action) {
+                                    case 'create':
+                                        {
+                                            this.modalGeneral = 1;
+                                            this.titleModal = 'Creación de Departamento';
+                                            this.messageModal = 'Ingrese el titulo del departamento';
+                                            this.modalDeparture = 1;
+                                            this.titleDeparture = '';
+                                            this.errorTitleDeparture = 0;
+                                            break;
+                                        }
+    
+                                    case 'update':
+                                        {
+                                            break;
+                                        }
+                                    case 'delete':
+                                        {
+                                            break;
+                                        }
+
+                                }
+                                break;
+                            }
+                        case "position":
+                            {
+                                switch (action) {
+                                    case 'create':
+                                        {
+
+                                            break;
+                                        }
+                                    case 'update':
+                                        {
+                                            break;
+                                        }
+                                    case 'delete':
+                                        {
+                                            break;
+                                        }
+
+                                }
+                                break;
+                            }
+                        case "employee":
+                            {
+                                switch (action) {
+                                    case 'create':
+                                        {
+
+                                            break;
+                                        }
+                                    case 'update':
+                                        {
+                                            break;
+                                        }
+                                    case 'delete':
+                                        {
+                                            break;
+                                        }
+
+                                }
+                                break;
+                            }
+                    }
+
+                },
             },
         })
 </script>
