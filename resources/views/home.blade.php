@@ -110,8 +110,19 @@
         let elemento = new Vue({
             el: '.app',
             data: {
-                menu:0
-            }
+                menu:0,
+                modalGeneral:0,
+                titleModal:'',
+                messageModal:'',
+                modalDeparture:0,
+                titleDeparture:'',
+                errorTitleDeparture:0,
+            },
+
+            methods: {
+                closeModal(){},
+                createDeparture(){},
+            },
         })
 </script>
 @endsection
