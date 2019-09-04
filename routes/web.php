@@ -15,11 +15,14 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::post('/departure/create', [
-	'use' => 'DepartureController@create',
-	'as' => 'departurecreate',
-	]);
-
 Route::get('/allQuery', 'QueryController@allQuery')->name('allQuery');
+
+//Departure
+Route::post('/departure/create', 'DepartureController@create')->name('departurecreate');
 Route::delete('/departure/delete/{id}', 'DepartureController@delete')->name('departuredelete');
 Route::put('/departure/update', 'DepartureController@update')->name('departureupdate');
+
+//Position
+Route::post('/position/create', 'PositionController@create')->name('positioncreate');
+Route::delete('/position/delete/{id}', 'PositionController@delete')->name('positiondelete');
+Route::put('/position/update', 'PositionController@update')->name('positionupdate');

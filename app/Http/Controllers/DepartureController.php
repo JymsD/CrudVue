@@ -15,7 +15,7 @@ class DepartureController extends Controller
     }
 
     public function update(Request $request) {
-      $departure = new Departure::find($request->id);
+      $departure = Departure::find($request->id);
       $departure->title = $request->title;
       $departure->save();
     }
