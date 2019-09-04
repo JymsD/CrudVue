@@ -1,7 +1,9 @@
-##CrudVue
+#CrudVue
+
 Crud en laravel utilizando Vue como framework Frontend
 
-##Install App
+#Install App
+
 1- Clone repo for this project locally
 
 2- cd into project
@@ -20,7 +22,8 @@ Crud en laravel utilizando Vue como framework Frontend
 
 9- Seeding database. run in you terminal "php artisan db:seed"
 
-##Environment
+#Environment
+
 PHP >=5.6.4
 Laravel 5.4.*
 vue ^2.0.1
