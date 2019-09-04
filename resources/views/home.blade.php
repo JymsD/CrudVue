@@ -129,7 +129,14 @@
                     <h3>Empleado</h3>
                 </div>
                 <div class="column">
-                   Tabla Empleados
+                    <div v-if="positions.length">
+                        <a class="button is-success" @click="openModal('employee','create')">
+                            Agregar Empleado
+                        </a>
+                    </div>
+                    <div v-else>
+                        <span class="text-danger">Debe existir un cargo por lo menos</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -148,6 +155,7 @@
             <h3 class="text-center">@{{ titleModal }}</h3>
             <div class="field">
                 <label class="label">@{{ messageModal }}</label>
+                <!--Departure-->
                 <p class="control" v-if="modalDeparture != 0">
                     <input class="input" placeholder="Departamento.." v-model="titleDeparture" :readonly="modalDeparture == 3">
                 </p>
@@ -156,6 +164,9 @@
                         El nombre del departamento no puede estar vacio.
                     </div>
                 </div>
+                <!--/Departure-->
+
+                <!--Position-->
                 <p class="control" v-if="modalPosition">
                     <input class="input" placeholder="Cargo.." v-model="titlePosition" :readonly="modalPosition == 3">
                     <select class="select" :disabled="modalPosition == 3" v-model="idDeparturePosition">
@@ -167,15 +178,48 @@
                         El nombre del Cargo no puede estar vacio
                     </div>
                 </div>
+                <!--/Position-->
+
+                <!--Employee-->
+                <p class="control" v-if="modalEmployee">
+                    <input class="input" placeholder="Nombre.." v-model="nameEmployee" :readonly="modalEmployee == 3">
+                    <input class="input" placeholder="Apellido.." v-model="lastnameEmployee" :readonly="modalEmployee == 3">
+                    <input class="input" placeholder="Email.." v-model="emailEmployee" :readonly="modalEmployee == 3">
+                    <input class="input" placeholder="Nacimiento.." v-model="birthdayEmployee" :readonly="modalEmployee == 3">
+                    <label>Departamento: </label>
+                    <select class="select" :disabled="modalEmployee == 3" v-model="idFilterDeparture">
+                        <option v-for="departure in departures" :value="departure.id">@{{ departure.title }}</option>
+                    </select>
+                    <label>Cargo: </label>
+                    <select class="select" :disabled="modalEmployee == 3" v-model="idFilterPosition">
+                        <option v-for="position in positions" :value="position.id">@{{ position.title }}</option>
+                    </select>
+                </p>
+                <div class="colunms text-center" v-show="errorEmployee">
+                    <div class="column text-center text-danger">
+                        @{{ errorMessageEmployee }}
+                    </div>
+                </div>
+                <!--/Employee-->
                 <div class="columns button-content">
                     <div class="columns">
+                        <!--Departure-->
                         <a class="button is-success" @click="createDeparture()" v-if="modalDeparture==1">Aceptar</a>
                         <a class="button is-success" @click="updateDeparture()" v-if="modalDeparture==2">Aceptar</a>
                         <a class="button is-success" @click="destroyDeparture()" v-if="modalDeparture==3">Aceptar</a>
+                        <!--/Departure-->
 
+                        <!--Position-->
                         <a class="button is-success" @click="createPosition()" v-if="modalPosition==1">Aceptar</a>
                         <a class="button is-success" @click="updatePosition()" v-if="modalPosition==2">Aceptar</a>
                         <a class="button is-success" @click="destroyPosition()" v-if="modalPosition==3">Aceptar</a>
+                        <!--/Position-->
+                        
+                        <!--Employee-->
+                        <a class="button is-success" @click="createEmployee()" v-if="modalEmployee==1">Aceptar</a>
+                        <a class="button is-success" @click="updateEmployee()" v-if="modalEmployee==2">Aceptar</a>
+                        <a class="button is-success" @click="destroyEmployee()" v-if="modalPosition==3">Aceptar</a>
+                        <!--/Employee-->
                     </div>
                     <div class="columns">
                         <a class="button is-danger" @click="closeModal()">Cancelar</a>
@@ -213,7 +257,22 @@
                 titlePosition:'',
                 idDeparturePosition: 0,
                 errorTitlePosition:0,
-                positions: []
+                positions: [],
+
+                //Employee
+                idEmployee: 0,
+                modalEmployee: 0,
+                nameEmployee: '',
+                lastnameEmployee: '',
+                emailEmployee: '',
+                birthdayEmployee: '',
+                idFilterDeparture: 0,
+                filterDeparture: [],
+                idFilterPosition: 0,
+                filterPosition: []
+                errorEmployee:0,
+                errorMessageEmployee: '',
+                employees: []
             },
             watch: {
                 modalGeneral: function (value) {
@@ -242,6 +301,7 @@
                     this.messageModal = '';
                     this.modalDeparture = 0;
                     this.modalPosition = 0;
+                    this.modalEmployee = 0;
                 },
 
                 createDeparture(){
@@ -355,6 +415,64 @@
                     });
                 },
 
+                createEmployee(){
+                    if (this.titlePosition == '') {
+                        this.errorTitlePosition = 1;
+                        return;
+                    }
+
+                    let me = this;
+                    axios.post("{{route('employeecreate')}}", {
+                        'title': this.titlePosition,
+                        'departure': this.idDeparturePosition
+                    }).then(function(response){
+                        me.titlePosition = '';
+                        me.errorTitlePosition = 0;
+                        me.modalPosition = 0;
+                        me.idDeparturePosition = 0;
+                        me.closeModal();
+                    }).catch(function(error) {
+                        console.log(error);
+                    });
+                },
+
+                destroyEmployee(){
+                    let me=this;
+                    axios.delete("{{url('/employee/delete')}}"+"/"+this.idEmployee).
+                    then(function (response) {
+                        me.titlePosition='';
+                        me.modalPosition=0;
+                        me.idDeparturePosition = 0;
+                        me.errorTitlePosition = 0;
+                        me.closeModal();
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                },
+
+                updateEmployee(){
+                    if (this.titlePosition == '') {
+                        this.errorTitlePosition = 1;
+                        return;
+                    }
+
+                    let me = this;
+                    axios.put("{{route('employeeupdate')}}", {
+                        'title': this.titlePosition,
+                        'departure': this.idDeparturePosition,
+                        'id': this.idPosition
+                    }).then(function (response) {
+                        me.titlePosition = '';
+                        me.idPosition = 0;
+                        me.errorTitlePosition = 0;
+                        me.modalPosition = 0;
+                        me.idDeparturePosition = 0;
+                        me.closeModal();
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                },
+
                 openModal(type, action, data = []){
 
                     switch (type) {
@@ -444,7 +562,18 @@
                                 switch (action) {
                                     case 'create':
                                         {
-
+                                            this.modalGeneral = 1;
+                                            this.titleModal = 'Creación de Empleado';
+                                            this.messageModal = 'Ingrese los datos del Empleado';
+                                            this.modalEmployee = 1;
+                                            this.nameEmployee = '';
+                                            this.lastnameEmployee = '';
+                                            this.emailEmployee = '';
+                                            this.birthdayEmployee = '';
+                                            this.idFilterDeparture = 0;
+                                            this.idFilterPosition = 0;
+                                            this.filterDeparture = [];
+                                            this.filterPosition = [];
                                             break;
                                         }
                                     case 'update':
