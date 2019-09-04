@@ -14,4 +14,8 @@ class Position extends Model
     public function departure() {
       return $this->belongsTo('App\Departure');
     }
+
+    public function employees() {
+      return $this->hasMany('App\Employee');
+    }
 }

@@ -26,3 +26,8 @@ Route::put('/departure/update', 'DepartureController@update')->name('departureup
 Route::post('/position/create', 'PositionController@create')->name('positioncreate');
 Route::delete('/position/delete/{id}', 'PositionController@delete')->name('positiondelete');
 Route::put('/position/update', 'PositionController@update')->name('positionupdate');
+
+//Employee
+Route::post('/employee/create', 'EmployeeController@create')->name('employeecreate');
+Route::delete('/employee/delete/{id}', 'EmployeeController@delete')->name('employeedelete');
+Route::put('/employee/update', 'EmployeeController@update')->name('employeeupdate');
