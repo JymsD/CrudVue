@@ -59,6 +59,7 @@
                             <th>#</th>
                             <th>Titulo</th>
                             <th>Eliminar</th>
+                            <th>Editar</th>
                         </thead>
                         <tbody>
                             <tr v-for="departure in departures">
@@ -66,6 +67,9 @@
                                 <td>@{{ departure.title }}</td>
                                 <td @click="openModal('departure', 'delete', departure)">
                                     <i class="fa fa-ban" aria-hidden="true"></i>
+                                </td>
+                                <td @click="openModal('departure', 'update', departure)">
+                                    <i class="fa fa-pencil" aria-hidden="true"></i>
                                 </td>
                             </tr>
                         </tbody>
@@ -98,7 +102,7 @@
     </div>
     <div class="columns margin0 text-center vertical-center personal-menu">
         <div class="column">Empleados 0 </div> 
-        <div class="column">Departamentos 0 </div> 
+        <div class="column">Departamentos @{{departures.length}} </div> 
         <div class="column">Cargo 0</div>
     </div>
 </div>
@@ -111,7 +115,7 @@
             <div class="field">
                 <label class="label">@{{ messageModal }}</label>
                 <p class="control" v-if="modalDeparture != 0">
-                    <input class="input" placeholder="Departamento.." v-model="titleDeparture" v-if="modalDeparture == 3" readonly>
+                    <input class="input" placeholder="Departamento.." v-model="titleDeparture" :readonly="modalDeparture == 3">
                 </p>
                 <div class="columns text-center" v-show="errorTitleDeparture">
                     <div class="columns text-center text-danger">
@@ -120,7 +124,9 @@
                 </div>
                 <div class="columns button-content">
                     <div class="columns">
-                        <a class="button is-success" @click="createDeparture()" v-if="modalDeparture==3">Aceptar</a>
+                        <a class="button is-success" @click="createDeparture()" v-if="modalDeparture==1">Aceptar</a>
+                        <a class="button is-success" @click="updateDeparture()" v-if="modalDeparture==2">Aceptar</a>
+                        <a class="button is-success" @click="destroyDeparture()" v-if="modalDeparture==3">Aceptar</a>
                     </div>
                     <div class="columns">
                         <a class="button is-danger" @click="closeModal()">Cancelar</a>
@@ -215,6 +221,27 @@
                     });
                 },
 
+                updateDeparture(){
+                    if (this.titleDeparture == '') {
+                        this.errorTitleDeparture = 1;
+                        return;
+                    }
+
+                    let me = this;
+                    axios.put("{{route('departureupdate')}}", {
+                        'title': this.titleDeparture,
+                        'id': this.idDeparture
+                    }).then(function (response) {
+                        me.titleDeparture = '';
+                        me.idDeparture = 0;
+                        me.errorTitleDeparture = 0;
+                        me.modalDeparture = 0;
+                        me.closeModal();
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                },
+
                 openModal(type, action, data = []){
 
                     switch (type) {
@@ -234,6 +261,13 @@
     
                                     case 'update':
                                         {
+                                            this.modalGeneral = 1;
+                                            this.titleModal = 'Modificacion de Departamento';
+                                            this.messageModal = 'Modifique el titulo del departamento';
+                                            this.modalDeparture = 2;
+                                            this.titleDeparture = data['title'];
+                                            this.errorTitleDeparture = 0;
+                                            this.idDeparture = data['id'];
                                             break;
                                         }
                                     case 'delete':

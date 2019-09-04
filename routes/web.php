@@ -22,3 +22,4 @@ Route::post('/departure/create', [
 
 Route::get('/allQuery', 'QueryController@allQuery')->name('allQuery');
 Route::delete('/departure/delete/{id}', 'DepartureController@delete')->name('departuredelete');
+Route::put('/departure/update', 'DepartureController@update')->name('departureupdate');
