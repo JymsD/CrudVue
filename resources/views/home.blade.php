@@ -51,7 +51,21 @@
             </div>
             <div class="columns">
                 <div class="column">
-                    Tabla de  departamentos
+                    <div v-if="!departures.length">
+                        No hay departamentos
+                    </div>
+                    <table v-else class="table">
+                        <thead>
+                            <th>#</th>
+                            <th>Titulo</th>
+                        </thead>
+                        <tbody>
+                            <tr v-for="departure in departures">
+                                <td>@{{ departure.id }}</td>
+                                <td>@{{ departure.title }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -79,11 +93,12 @@
         </div>
     </div>
     <div class="columns margin0 text-center vertical-center personal-menu">
-        <div class="column">Empleados 0</div>
-        <div class="column">Departamentos 0</div>
+        <div class="column">Empleados 0 </div> 
+        <div class="column">Departamentos 0 </div> 
         <div class="column">Cargo 0</div>
     </div>
 </div>
+<!--Modal-->
 <div class="modal" :class="{'is-active' : modalGeneral}">
     <div class="modal-background"></div>
     <div class="modal-content">
@@ -101,6 +116,9 @@
                 </div>
                 <div class="columns button-content">
                     <div class="columns">
+                        <a class="button is-success" @click="createDeparture()" v-if="modalDeparture==1">Aceptar</a>
+                    </div>
+                    <div class="columns">
                         <a class="button is-danger" @click="closeModal()">Cancelar</a>
                     </div>
                 </div>
@@ -109,11 +127,16 @@
         <button class="modal-close" @click="closeModal()"></button>
     </div>
 </div>
+<!--Modal-->
+
 @endsection
 @section('script')
 <script>
         let elemento = new Vue({
             el: '.app',
+            mounted: function() {
+                this.allQuery();
+            },
             data: {
                 menu:0,
 
@@ -128,9 +151,27 @@
                 titleDeparture:'',
 
                 errorTitleDeparture:0,
+                departures: []
             },
+            watch: {
+                modalGeneral: function (value) {
+                    if (!value) {
+                        this.allQuery();
+                    }
+                }
+            }
 
             methods: {
+                allQuery() {
+                    let me = this;
+                    axios.get("{{route('allQuery')}}").
+                    then(function(response) {
+                        let answer = response.data;
+                        me.departures = answer.departures;
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                },
                 closeModal() {
 
                     this.modalGeneral = 0;
@@ -138,13 +179,30 @@
                     this.messageModal = '';
                 },
 
-                createDeparture(){},
+                createDeparture(){
+                    if (this.titleDeparture == '') {
+                        this.errorTitleDeparture = 1;
+                        return;
+                    }
+
+                    let me = this;
+                    axios.post("{{route('departurecreate')}}", {
+                        'title': this.titleDeparture
+                    }).then(function(response){
+                        me.titleDeparture = '';
+                        me.errorTitleDeparture = 0;
+                        me.modalDeparture = 0;
+                        me.closeModal();
+                    }).catch(function(error) {
+                        console.log(error);
+                    });
+                },
 
                 openModal(type, action, data = []){
 
                     switch (type) {
                         case "departure":
-                            {
+                            { 
                                 switch (action) {
                                     case 'create':
                                         {
