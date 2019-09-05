@@ -25,6 +25,7 @@ class PositionController extends Controller
 
     public function delete($id) {
       $position = Position::find($id);
+      $position->employees()->delete();
       $position->delete();
 
     }

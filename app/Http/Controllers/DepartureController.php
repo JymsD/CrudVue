@@ -22,6 +22,12 @@ class DepartureController extends Controller
 
     public function delete($id) {
       $departure = Departure::find($id);
+      $positions = $departure->positions()->get();
+
+      foreach ($positions as $position ) {
+        $position->employees()->delete();
+      }
+      
       $departure->positions()->delete();
       $departure->delete();
 

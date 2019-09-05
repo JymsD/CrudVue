@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Request\StoreEmployee;
-use Carbon;
+use Carbon\Carbon;
 use App\Employee;
 
 class EmployeeController extends Controller
