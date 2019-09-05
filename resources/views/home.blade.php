@@ -185,7 +185,7 @@
                     <input class="input" placeholder="Nombre.." v-model="nameEmployee" :readonly="modalEmployee == 3">
                     <input class="input" placeholder="Apellido.." v-model="lastnameEmployee" :readonly="modalEmployee == 3">
                     <input class="input" placeholder="Email.." v-model="emailEmployee" :readonly="modalEmployee == 3">
-                    <birthdayPicker :birthday.sync="birthdayEmployee"></birthdayPicker>
+                    <birthdaypicker :birthday.sync="birthdayEmployee"></birthdaypicker>
                     <label>Departamento: </label>
                     <select class="select" :disabled="modalEmployee == 3" v-model="idFilterDeparture">
                         <option v-for="departure in departures" :value="departure.id">@{{ departure.title }}</option>
@@ -269,7 +269,7 @@
                 idFilterDeparture: 0,
                 filterDeparture: [],
                 idFilterPosition: 0,
-                filterPosition: []
+                filterPosition: [],
                 errorEmployee:0,
                 errorMessageEmployee: '',
                 employees: []
@@ -279,6 +279,15 @@
                     if (!value) {
                         this.allQuery();
                     }
+                },
+                idFilterDeparture: function (value) {
+                    let me = this;
+                    this.filterDeparture.map( function(x) {
+                        if (x.id === value) {
+                            me.filterPosition = x.positions;
+                            me.idFilterPosition = me.filterPosition[0].id;
+                        }
+                    });
                 }
             },
 
@@ -574,6 +583,24 @@
                                             this.idFilterPosition = 0;
                                             this.filterDeparture = [];
                                             this.filterPosition = [];
+                                            let me =this;
+                                            this.departures.map( function (x) {
+                                                if (x.positions.length) {
+                                                    if (me.filterDeparture.indexOf(x)) {
+                                                        me.filterDeparture.push(x);
+                                                    }
+                                                }
+                                            });
+
+                                            if (this.filterDeparture.length) {
+                                                this.idFilterDeparture = this.filterDeparture[0].id;
+                                                this.filterPosition = this.filterDeparture[0].positions;
+                                                this.idFilterPosition = this.filterDeparture[0].positions[0].id;
+                                            } else {
+                                                this.idFilterDeparture = 0;
+                                                this.idFilterPosition = 0;
+                                                this.filterPosition = [];
+                                            }
                                             break;
                                         }
                                     case 'update':

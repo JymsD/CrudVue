@@ -13,7 +13,7 @@ class QueryController extends Controller
         return redirect('/');
       } else {
         return [
-          'departures' => Departure::all(),
+          'departures' => Departure::with('positions')->get(),
           'positions' => Position::with('departure')->get()
         ];
       }
