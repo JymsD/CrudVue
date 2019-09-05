@@ -1,10 +1,17 @@
 <script>
   import Datepicker from 'vue-datapicker'
   export default {
+    props: {
+      today: {
+        type: String,
+        default: '',
+        required: false
+      }
+    },
     data() {
       return {
         startTime: {
-          time: ''
+          time: this.today
         },
         endTime: {
           time: ''

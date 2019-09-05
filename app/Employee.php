@@ -36,8 +36,8 @@ class Employee extends Model
     public function getDepartureAttribute() {
         $departure = Departure::find(Position::find($this->position_id)->departure_id);
         return [
-            'title'=> $departure->title;
-            'id' => $departure->id;
+            'title'=> $departure->title,
+            'id' => $departure->id
         ];
     }
 }

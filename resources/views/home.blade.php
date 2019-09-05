@@ -139,10 +139,49 @@
                     </div>
                 </div>
             </div>
+            <div class="columns">
+                <div class="column is-12">
+                    <div v-if="!employees.length">
+                        No hay Empleados
+                    </div>
+                    <table v-else class="table" style="font-size: 10px">
+                        <thead>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Correo</th>
+                            <th>Fecha de nacimiento</th>
+                            <th>Edad</th>
+                            <th>Cargo</th>
+                            <th>Departamento</th>
+                            <th>Eliminar</th>
+                            <th>Editar</th>
+                        </thead>
+                        <tbody>
+                            <tr v-for="employee in employees">
+                                <td>@{{ employee.id }}</td>
+                                <td>@{{ employee.name }}</td>
+                                <td>@{{ employee.lastname }}</td>
+                                <td>@{{ employee.email }}</td>
+                                <td>@{{ employee.birthday }}</td>
+                                <td>@{{ employee.years }}</td>
+                                <td>@{{ employee.position.title }}</td>
+                                <td>@{{ employee.departure.title }}</td>
+                                <td @click="openModal('employee', 'delete', employee)">
+                                    <i class="fa fa-ban" aria-hidden="true"></i>
+                                </td>
+                                <td @click="openModal('employee', 'update', employee)">
+                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
     <div class="columns margin0 text-center vertical-center personal-menu">
-        <div class="column">Empleados 0 </div> 
+        <div class="column">Empleados @{{employees.length}} </div> 
         <div class="column">Departamentos @{{departures.length}} </div> 
         <div class="column">Cargo @{{positions.length}}</div>
     </div>
@@ -185,7 +224,8 @@
                     <input class="input" placeholder="Nombre.." v-model="nameEmployee" :readonly="modalEmployee == 3">
                     <input class="input" placeholder="Apellido.." v-model="lastnameEmployee" :readonly="modalEmployee == 3">
                     <input class="input" placeholder="Email.." v-model="emailEmployee" :readonly="modalEmployee == 3">
-                    <birthdaypicker :birthday.sync="birthdayEmployee"></birthdaypicker>
+                    <birthdayPicker :birthday.sync="birthdayEmployee" v-if="modalEmployee==1 || modalEmployee==2" :today="birthdayEmployee"></birthdayPicker>
+                    <input class="input" v-model="birthdayEmployee" readonly v-if="modalEmployee==3">
                     <label>Departamento: </label>
                     <select class="select" :disabled="modalEmployee == 3" v-model="idFilterDeparture">
                         <option v-for="departure in departures" :value="departure.id">@{{ departure.title }}</option>
