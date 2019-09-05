@@ -430,23 +430,46 @@
                     if (this.validateEmployee()) {
                         return;
                     }
-                    if (this.titlePosition == '') {
-                        this.errorTitlePosition = 1;
-                        return;
-                    }
 
                     let me = this;
                     axios.post("{{route('employeecreate')}}", {
-                        'title': this.titlePosition,
-                        'departure': this.idDeparturePosition
+                        'name': this.nameEmployee,
+                        'lastname': this.lastnameEmployee,
+                        'email': this.emailEmployee,
+                        'birthday': this.birthdayEmployee,
+                        'position': this.idFilterPosition
                     }).then(function(response){
-                        me.titlePosition = '';
-                        me.errorTitlePosition = 0;
-                        me.modalPosition = 0;
-                        me.idDeparturePosition = 0;
-                        me.closeModal();
+                        me.errorMessageEmployee = [];
+                        me.errorEmployee = 0;
+                        if (response.data.date) {
+                            me.errorEmployee = 1;
+                            me.errorMessageEmployee.push(response.data.date[0]);
+                        } else {
+                            me.nameEmployee = '';
+                            me.lastnameEmployee = '';
+                            me.emailEmployee = '';
+                            me.birthdayEmployee = '';
+                            me.idFilterPosition = 0;
+                            me.errorEmployee = 0;
+                            me.errorMessageEmployee = [];
+                            me.modalEmployee = 0;
+                            me.closeModal();
+                        }
+                        
                     }).catch(function(error) {
-                        console.log(error);
+                        me.errorMessageEmployee = [];
+                        if (error.response && error.response.status === 500) {
+                            console.log(error.response.data);
+                        }
+                        if (error.response && error.response.status === 422) {
+                            me.errorEmployee = 1;
+                            error.response.data.email.forEach(function (element) {
+                                me.errorMessageEmployee.push(element);
+                            });
+                            console.clear();
+                        } else {
+                            console.log(error);
+                        }
                     });
                 },
 
